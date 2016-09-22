@@ -30,8 +30,8 @@ repos: $(REPOS_TARGET)
 	$(eval BRANCH := $(shell \
 	if [[ "HEAD" != "`git rev-parse --abbrev-ref HEAD`" ]]; then \
 		echo "`git rev-parse --abbrev-ref HEAD`"; \
-        elif [ -n "$BRANCH_NAME" ]; then \
-		echo $BRANCH_NAME; \
+        elif [ -n "${BRANCH_NAME}" ]; then \
+		echo "${BRANCH_NAME}"; \
         else \
 		echo "`git name-rev --name-only HEAD`"; \
         fi))
