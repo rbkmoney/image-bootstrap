@@ -55,7 +55,7 @@ repos: $(REPOS_TARGET)
 
 test:
 	$(DOCKER) run "$(SERVICE_IMAGE_NAME):$(shell cat .state)" \
-	bash -c "salt --versions-report; ssh -V"
+	bash -c "salt --versions-report"
 
 push:
 	$(DOCKER) push "$(SERVICE_IMAGE_NAME):$(shell cat .state)"
