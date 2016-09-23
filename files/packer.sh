@@ -72,7 +72,7 @@ sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
 ebegin "Emerging localepurge salt qemacs nvi openssh"
-${EMERGE} --verbose=n ">=zeromq-4.1" salt qemacs nvi app-admin/localepurge openssh
+${EMERGE} --verbose=n ">=zeromq-4.1" salt qemacs nvi app-admin/localepurge
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
