@@ -1,13 +1,14 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
 
-.PHONY: $(SERVICE_NAME) push submodules repos
+.PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
 
 -include $(UTILS_PATH)/make_lib/utils_repo.mk
 PACKER := $(shell which packer 2>/dev/null)
 
 COMMIT := $(shell git rev-parse HEAD)
+TAG := $(COMMIT)
 rev = $(shell git rev-parse --abbrev-ref HEAD)
 BRANCH := $(shell \
 if [[ "${rev}" != "HEAD" ]]; then \
@@ -33,12 +34,14 @@ submodules: $(SUBTARGETS)
 
 repos: $(REPOS_TARGET)
 
-.latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
-	$(UTILS_PATH)/sh/getstage3.sh amd64 -hardened+nomultilib | tail -n 1 > $@
+update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
+	$(UTILS_PATH)/sh/getstage3.sh find-latest amd64 -hardened+nomultilib | tail -n 1 > .latest-stage3
 
-.state: .latest-stage3 $(PACKER) $(REPOS_TARGET) packer.json files/packer.sh files/portage.make.conf
-	$(eval TAG := $(shell date +%s)-$(COMMIT))
-	$(eval STAGE3 := $(shell cat .latest-stage3))
+.latest-stage3.loaded: .latest-stage3
+	$(UTILS_PATH)/sh/getstage3.sh get-path $(shell cat .latest-stage3) | tail -n 1 > $@
+
+.state: .latest-stage3.loaded $(PACKER) $(REPOS_TARGET) packer.json files/packer.sh files/portage.make.conf
+	$(eval STAGE3 := $(shell cat .latest-stage3.loaded))
 	$(shell test -z "$(STAGE3)" && exit 1)
 	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox /bin/sh -c \
 	"tar xjf /tmp/pwd/$(STAGE3); tar cjf /tmp/pwd/$(STAGE3).repack *"
