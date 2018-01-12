@@ -2,7 +2,7 @@
 source /lib/gentoo/functions.sh
 
 export EMERGE="emerge -q"
-SALT_VERSION="2015.8.13"
+SALT_VERSION="2017.7.2-r1"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -47,7 +47,7 @@ EOF
 eend $? "Failed" || exit $?
 
 ebegin "Selecting profile"
-eselect profile set hardened/linux/amd64/no-multilib
+eselect profile set default/linux/amd64/17.0/no-multilib/hardened
 eend $? "Failed" || exit $?
 
 ebegin "Setting bootstrap flags"
