@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 source /lib/gentoo/functions.sh
 
 export EMERGE="emerge -q"
