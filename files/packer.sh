@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 source /lib/gentoo/functions.sh
 
 export EMERGE="emerge -q"
@@ -77,11 +78,11 @@ einfo "Updating perl"
 perl-cleaner --reallyall || exit $?
 
 ebegin "Updating system"
-${EMERGE} -1 pypax elfix && ${EMERGE} -uDN @system
+${EMERGE} -uDNt @system
 eend $? "Failed" || exit $?
 
 ebegin "Updating world"
-${EMERGE} -uDN @world
+${EMERGE} -uDNt @world
 eend $? "Failed" || exit $?
 
 ebegin "Cleaning deps"
