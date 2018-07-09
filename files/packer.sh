@@ -45,6 +45,7 @@ eend $? "Failed" || exit $?
 ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
+dev-python/pycryptodome ~amd64
 =app-admin/salt-${SALT_VERSION} ~amd64
 EOF
 eend $? "Failed" || exit $?
