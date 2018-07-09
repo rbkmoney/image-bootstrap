@@ -2,7 +2,7 @@
 source /lib/gentoo/functions.sh
 
 export EMERGE="emerge -q"
-SALT_VERSION="2017.7.2-r1"
+SALT_VERSION="2018.3.2"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -20,14 +20,6 @@ eend $? "Failed" || exit $?
 locale-gen || exit $?
 
 eselect locale set en_DK.utf8 || exit $?
-
-ebegin "Downloading CA for the package repository"
-mkdir -p /usr/local/share/ca-certificates \
-    && wget -q http://bakka.su/ca/baka_bakka.crt -O /usr/local/share/ca-certificates/baka_bakka.crt
-eend $? "Failed" || exit $?
-ebegin "Updating CA cerificates"
-update-ca-certificates --fresh > /dev/null
-eend $? "Failed" || exit $?
 
 ebegin "Copying portage/make.conf"
 cp /tmp/data/portage.make.conf /etc/portage/make.conf
@@ -53,10 +45,8 @@ eend $? "Failed" || exit $?
 ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
+dev-python/pycryptodome ~amd64
 =app-admin/salt-${SALT_VERSION} ~amd64
-net-libs/zeromq:0/5 ~amd64
-<dev-python/pyzmq-16 ~amd64
-dev-python/cffi ~amd64
 EOF
 eend $? "Failed" || exit $?
 
@@ -87,8 +77,12 @@ eend $? "Failed" || exit $?
 einfo "Updating perl"
 perl-cleaner --reallyall || exit $?
 
+ebegin "Updating system"
+${EMERGE} -uDNt @system
+eend $? "Failed" || exit $?
+
 ebegin "Updating world"
-${EMERGE} -uDN @world
+${EMERGE} -uDNt @world
 eend $? "Failed" || exit $?
 
 ebegin "Cleaning deps"
