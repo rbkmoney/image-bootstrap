@@ -2,7 +2,7 @@
 source /lib/gentoo/functions.sh
 
 export EMERGE="emerge -q"
-SALT_VERSION="2018.3.0"
+SALT_VERSION="2018.3.2"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
