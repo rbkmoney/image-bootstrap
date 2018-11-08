@@ -1,8 +1,7 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-export EMERGE="emerge -q"
-SALT_VERSION="2018.3.2"
+SALT_VERSION="2018.3.3"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -51,11 +50,11 @@ EOF
 eend $? "Failed" || exit $?
 
 ebegin "Removing openssh (to skip it's rebuilding with -bindist)"
-${EMERGE} -C openssh
+emerge -q -C openssh
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
-FEATURES="-getbinpkg" ${EMERGE} --verbose=n openssl
+FEATURES="-getbinpkg" emerge -q --verbose=n openssl
 eend $? "Failed" || exit $?
 
 ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
@@ -63,7 +62,7 @@ sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
 ebegin "Emerging localepurge salt qemacs nvi openssh"
-${EMERGE} --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi app-admin/localepurge
+emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi app-admin/localepurge
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
@@ -78,15 +77,15 @@ einfo "Updating perl"
 perl-cleaner --reallyall || exit $?
 
 ebegin "Updating system"
-${EMERGE} -uDNt @system
+emerge -q -uDNt @system
 eend $? "Failed" || exit $?
 
 ebegin "Updating world"
-${EMERGE} -uDNt @world
+emerge -q -uDNt @world
 eend $? "Failed" || exit $?
 
 ebegin "Cleaning deps"
-${EMERGE} --verbose=n --depclean
+emerge -q --verbose=n --depclean
 eend $? "Failed" || exit $?
 
 einfo "Purging extra locales"
