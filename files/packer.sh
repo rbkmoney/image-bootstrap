@@ -1,17 +1,10 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-SALT_VERSION="2018.3.3"
+SALT_VERSION="2017.7.8"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
-en_DK.UTF-8 UTF-8
-EOF
-eend $? "Failed" || exit $?
-ebegin "Setting locales to preserve"
-cat <<EOF> /etc/locale.nopurge
-MANDELETE
-SHOWFREEDSPACE
 en_DK.UTF-8 UTF-8
 EOF
 eend $? "Failed" || exit $?
@@ -61,8 +54,8 @@ ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
 sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
-ebegin "Emerging localepurge salt qemacs nvi openssh"
-emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi app-admin/localepurge
+ebegin "Emerging salt qemacs nvi openssh"
+emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
@@ -87,9 +80,6 @@ eend $? "Failed" || exit $?
 ebegin "Cleaning deps"
 emerge -q --verbose=n --depclean
 eend $? "Failed" || exit $?
-
-einfo "Purging extra locales"
-localepurge || exit $?
 
 if [ ! -d /var/salt ]; then
     ebegin "Creating /var/salt"
