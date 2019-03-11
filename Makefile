@@ -1,5 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
+REGISTRY := dr2.rbkmoney.com
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
