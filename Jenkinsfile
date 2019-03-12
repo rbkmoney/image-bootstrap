@@ -25,7 +25,9 @@ build("image-bootstrap", 'docker-host') {
     }
     if (env.BRANCH_NAME == 'master') {
       runStage('docker image push') {
-	sh 'make push'
+        docker.withRegistry('https://dr2.rbkmoney.com/v2/', 'jenkins_harbor') {
+          sh 'make push'
+        }
       }
     }
   } finally {

@@ -1,5 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
+REGISTRY := dr2.rbkmoney.com
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
@@ -45,7 +46,7 @@ update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 .state: .latest-stage3.loaded $(PACKER) $(REPOS_TARGET) packer.json files/packer.sh files/portage.make.conf
 	$(eval STAGE3 := $(shell cat .latest-stage3.loaded))
 	$(shell test -z "$(STAGE3)" && exit 1)
-	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.28.0 /bin/sh -c \
+	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.30.1 /bin/sh -c \
 	"export EXTRACT_UNSAFE_SYMLINKS=1; tar xf /tmp/pwd/$(STAGE3); tar cjf /tmp/pwd/$(STAGE3).repack *"
 	$(DOCKER) import $(STAGE3).repack "$(REGISTRY)/$(ORG_NAME)/stage3-amd64-hardened-nomultilib"
 	$(PACKER) build -var 'image-tag=$(TAG)' packer.json
