@@ -1,6 +1,6 @@
 {
     "variables": {
-        "docker-registry": "dr2.rbkmoney.com",
+        "docker-registry": "{{env `REGISTRY`}}",
         "files-dir": "{{env `PWD`}}/files/",
         "shared-dir": "{{env `HOME`}}/.cache/rbkmoney/images/shared/",
         "image-tag": null
