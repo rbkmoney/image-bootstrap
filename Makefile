@@ -35,18 +35,18 @@ submodules: $(SUBTARGETS)
 repos: $(REPOS_TARGET)
 
 update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
-	$(UTILS_PATH)/sh/getstage3.sh find-latest -D "http://gentoo.bakka.su/gentoo-distfiles" \
+	$(UTILS_PATH)/sh/getstage3.sh find-latest -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
 		amd64 -hardened+nomultilib | tail -n 1 > .latest-stage3
 
 .latest-stage3.loaded: .latest-stage3
-	$(UTILS_PATH)/sh/getstage3.sh get-path -D "http://gentoo.bakka.su/gentoo-distfiles" \
+	$(UTILS_PATH)/sh/getstage3.sh get-path -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
 		$(shell cat .latest-stage3) | tail -n 1 > $@
 
 .state: .latest-stage3.loaded $(PACKER) $(REPOS_TARGET) packer.json files/packer.sh files/portage.make.conf
 	$(eval STAGE3 := $(shell cat .latest-stage3.loaded))
 	$(shell test -z "$(STAGE3)" && exit 1)
-	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox /bin/sh -c \
-	"tar xjf /tmp/pwd/$(STAGE3); tar cjf /tmp/pwd/$(STAGE3).repack *"
+	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.28.0 /bin/sh -c \
+	"export EXTRACT_UNSAFE_SYMLINKS=1; tar xf /tmp/pwd/$(STAGE3); tar cjf /tmp/pwd/$(STAGE3).repack *"
 	$(DOCKER) import $(STAGE3).repack "$(REGISTRY)/$(ORG_NAME)/stage3-amd64-hardened-nomultilib"
 	$(PACKER) build -var 'image-tag=$(TAG)' packer.json
 	printf "FROM $(SERVICE_IMAGE_NAME):$(TAG)\n \
