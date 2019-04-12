@@ -2,6 +2,7 @@
 source /lib/gentoo/functions.sh
 
 SALT_VERSION="2017.7.8"
+OPENSSL_ATOM=">=dev-libs/openssl-1.1.1b"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -37,6 +38,7 @@ eend $? "Failed" || exit $?
 ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
+${OPENSSL_ATOM} ~amd64
 =app-admin/salt-${SALT_VERSION} ~amd64
 EOF
 eend $? "Failed" || exit $?
@@ -46,7 +48,7 @@ emerge -q -C openssh
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
-FEATURES="-getbinpkg" emerge -q --verbose=n openssl
+FEATURES="-getbinpkg" emerge -q --verbose=n "${OPENSSL_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
