@@ -59,12 +59,12 @@ ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
 sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
-ebegin "Emerging salt qemacs nvi openssh"
-emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_ATOM}" qemacs nvi
+ebegin "Emerging salt qemacs nvi"
+emerge -q --verbose=n "${SALT_ATOM}" qemacs nvi
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
-eselect python set python2.7
+eselect python set python3.6
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
