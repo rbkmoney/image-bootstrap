@@ -37,7 +37,6 @@ eend $? "Failed" || exit $?
 ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
-dev-python/pycryptodome ~amd64
 =app-admin/salt-${SALT_VERSION} ~amd64
 EOF
 eend $? "Failed" || exit $?
@@ -90,14 +89,14 @@ fi
 find /usr/share/gtk-doc -delete
 find /usr/share/man -delete
 find /usr/share/doc -delete
-find /usr/share/sgml -print -delete
+find /usr/share/sgml -delete
 find /usr/share/i18n -print
 find /usr/share/misc -print
 find / -name '*.pyc' -delete
 
 ebegin "Removing temporary directories and logs"
 rm -rf /var/tmp/{portage,packages,distfiles}
-find /var/log -type f ! -name '.keep*' -print -delete
+find /var/log -type f ! -name '.keep*' -delete
 eend $? "Failed" || exit $?
 
 einfo "And here are some resulting space consumption details"
