@@ -1,8 +1,9 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-SALT_VERSION="2017.7.8"
 OPENSSL_ATOM=">=dev-libs/openssl-1.1.1b"
+SALT_VERSION="2017.7.8"
+SALT_ATOM="=app-admin/salt-${SALT_VERSION}"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -36,10 +37,13 @@ eselect profile set default/linux/amd64/17.0/no-multilib/hardened
 eend $? "Failed" || exit $?
 
 ebegin "Setting bootstrap flags"
-mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
+mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
 ${OPENSSL_ATOM} ~amd64
-=app-admin/salt-${SALT_VERSION} ~amd64
+${SALT_ATOM} ~amd64
+EOF
+cat <<EOF >> /etc/portage/package.unmask/bootstrap
+${OPENSSL_ATOM}
 EOF
 eend $? "Failed" || exit $?
 
@@ -56,7 +60,7 @@ sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt qemacs nvi openssh"
-emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi
+emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_ATOM}" qemacs nvi
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
