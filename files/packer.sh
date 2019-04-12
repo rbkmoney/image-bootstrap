@@ -52,7 +52,7 @@ emerge -q -C openssh
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
-FEATURES="-getbinpkg" emerge -q --verbose=n "${OPENSSL_ATOM}"
+emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
