@@ -2,6 +2,7 @@
 source /lib/gentoo/functions.sh
 
 OPENSSL_ATOM=">=dev-libs/openssl-1.1.1b"
+M2CRYPTO_ATOM=">=dev-python/m2crypto-0.27.0"
 SALT_VERSION="2017.7.8"
 SALT_ATOM="=app-admin/salt-${SALT_VERSION}"
 
@@ -40,6 +41,7 @@ ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
 ${OPENSSL_ATOM} ~amd64
+${M2CRYPTO_ATOM} ~amd64
 ${SALT_ATOM} ~amd64
 EOF
 cat <<EOF >> /etc/portage/package.unmask/bootstrap
@@ -60,7 +62,7 @@ sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt qemacs nvi"
-emerge -q --verbose=n "${SALT_ATOM}" qemacs nvi
+emerge -q --verbose=n "${M2CRYPTO_ATOM}" "${SALT_ATOM}" qemacs nvi
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
