@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-REGISTRY := dr2.rbkmoney.com
+PORTAGE_REF := 7dcfe97ec5b0f2a8aafbc21da0a477e6f5e548d0
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
@@ -23,7 +23,6 @@ fi)
 SUBMODULES = $(UTILS_PATH)
 SUBTARGETS = $(patsubst %,%/.git,$(SUBMODULES))
 REPOS = portage
-REPOS_TARGET = $(patsubst %,$(IMAGES_SHARED)/%/.git,$(REPOS))
 
 $(SUBTARGETS):
 	$(eval SSH_PRIVKEY := $(shell echo $(GITHUB_PRIVKEY) | sed -e 's|%|%%|g'))
@@ -33,7 +32,7 @@ $(SUBTARGETS):
 
 submodules: $(SUBTARGETS)
 
-repos: $(REPOS_TARGET)
+repos: $(REPOS)
 
 update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 	$(UTILS_PATH)/sh/getstage3.sh find-latest -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
@@ -43,7 +42,7 @@ update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 	$(UTILS_PATH)/sh/getstage3.sh get-path -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
 		$(shell cat .latest-stage3) | tail -n 1 > $@
 
-.state: .latest-stage3.loaded $(PACKER) $(REPOS_TARGET) packer.json files/packer.sh files/portage.make.conf
+.state: .latest-stage3.loaded $(PACKER) $(REPOS) packer.json files/packer.sh files/portage.make.conf
 	$(eval STAGE3 := $(shell cat .latest-stage3.loaded))
 	$(shell test -z "$(STAGE3)" && exit 1)
 	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.30.1 /bin/sh -c \

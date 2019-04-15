@@ -1,7 +1,10 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
+OPENSSL_ATOM=">=dev-libs/openssl-1.1.1b"
+M2CRYPTO_ATOM=">=dev-python/m2crypto-0.27.0"
 SALT_VERSION="2017.7.8"
+SALT_ATOM="=app-admin/salt-${SALT_VERSION}"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -35,10 +38,14 @@ eselect profile set default/linux/amd64/17.0/no-multilib/hardened
 eend $? "Failed" || exit $?
 
 ebegin "Setting bootstrap flags"
-mkdir -p /etc/portage/package.{accept_keywords,keywords,use,env} \
+mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} \
     && cat <<EOF>> /etc/portage/package.keywords/bootstrap
-dev-python/pycryptodome ~amd64
-=app-admin/salt-${SALT_VERSION} ~amd64
+${OPENSSL_ATOM} ~amd64
+${M2CRYPTO_ATOM} ~amd64
+${SALT_ATOM} ~amd64
+EOF
+cat <<EOF >> /etc/portage/package.unmask/bootstrap
+${OPENSSL_ATOM}
 EOF
 eend $? "Failed" || exit $?
 
@@ -47,19 +54,19 @@ emerge -q -C openssh
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
-FEATURES="-getbinpkg" emerge -q --verbose=n openssl
+emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
 sed -i "s|\# sed-remove||g" /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
-ebegin "Emerging salt qemacs nvi openssh"
-emerge -q --verbose=n ">=zeromq-4.1" "=app-admin/salt-${SALT_VERSION}" qemacs nvi
+ebegin "Emerging salt qemacs nvi"
+emerge -q --verbose=n "${M2CRYPTO_ATOM}" "${SALT_ATOM}" qemacs nvi
 eend $? "Failed" || exit $?
 
 ebegin "Selecting python2.7 as default python interpreter"
-eselect python set python2.7
+eselect python set python3.6
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
@@ -90,14 +97,14 @@ fi
 find /usr/share/gtk-doc -delete
 find /usr/share/man -delete
 find /usr/share/doc -delete
-find /usr/share/sgml -print -delete
+find /usr/share/sgml -delete
 find /usr/share/i18n -print
 find /usr/share/misc -print
 find / -name '*.pyc' -delete
 
 ebegin "Removing temporary directories and logs"
 rm -rf /var/tmp/{portage,packages,distfiles}
-find /var/log -type f ! -name '.keep*' -print -delete
+find /var/log -type f ! -name '.keep*' -delete
 eend $? "Failed" || exit $?
 
 einfo "And here are some resulting space consumption details"
