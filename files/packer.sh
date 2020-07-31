@@ -41,16 +41,8 @@ ebegin "Setting bootstrap flags"
 mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} 
 eend $? "Failed" || exit $?
 
-ebegin "Removing openssh (to skip it's rebuilding with -bindist)"
-emerge -q -C openssh
-eend $? "Failed" || exit $?
-
 ebegin "Rebuilding openssl -bindist"
-emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}"
-eend $? "Failed" || exit $?
-
-ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
-sed -i "s|\# sed-remove||g" /etc/portage/make.conf
+emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt qemacs nvi"
