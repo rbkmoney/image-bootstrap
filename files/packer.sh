@@ -1,10 +1,10 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-OPENSSL_ATOM=">=dev-libs/openssl-1.1.1b"
-M2CRYPTO_ATOM=">=dev-python/m2crypto-0.27.0"
-SALT_VERSION="2017.7.8"
-SALT_ATOM="=app-admin/salt-${SALT_VERSION}"
+OPENSSL_ATOM=">=dev-libs/openssl-1.1.1g"
+SALT_VERSION="3000.2-r4"
+SALT_ATOM=">=app-admin/salt-${SALT_VERSION}"
+PYTHON_SLOT="3.7"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -38,35 +38,19 @@ eselect profile set default/linux/amd64/17.0/no-multilib/hardened
 eend $? "Failed" || exit $?
 
 ebegin "Setting bootstrap flags"
-mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} \
-    && cat <<EOF>> /etc/portage/package.keywords/bootstrap
-${OPENSSL_ATOM} ~amd64
-${M2CRYPTO_ATOM} ~amd64
-${SALT_ATOM} ~amd64
-EOF
-cat <<EOF >> /etc/portage/package.unmask/bootstrap
-${OPENSSL_ATOM}
-EOF
-eend $? "Failed" || exit $?
-
-ebegin "Removing openssh (to skip it's rebuilding with -bindist)"
-emerge -q -C openssh
+mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} 
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
-emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}"
-eend $? "Failed" || exit $?
-
-ebegin "Uncommenting GENTOO_MIRRORS and other vars in make.conf"
-sed -i "s|\# sed-remove||g" /etc/portage/make.conf
+emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt qemacs nvi"
-emerge -q --verbose=n "${M2CRYPTO_ATOM}" "${SALT_ATOM}" qemacs nvi
+emerge -q --verbose=n "${SALT_ATOM}" qemacs
 eend $? "Failed" || exit $?
 
-ebegin "Selecting python2.7 as default python interpreter"
-eselect python set python3.6
+ebegin "Selecting python${PYTHON_SLOT} as default python interpreter"
+eselect python set "python${PYTHON_SLOT}"
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
@@ -74,7 +58,7 @@ eselect pager set /usr/bin/less
 eend $? "Failed" || exit $?
 
 einfo "Updating perl"
-perl-cleaner --reallyall || exit $?
+perl-cleaner --all || exit $?
 
 ebegin "Updating system"
 emerge -q -uDNt @system
