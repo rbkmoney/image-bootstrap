@@ -2,7 +2,7 @@
 source /lib/gentoo/functions.sh
 
 OPENSSL_ATOM=">=dev-libs/openssl-1.1.1g"
-SALT_VERSION="3000.2-r4"
+SALT_VERSION="3000.5"
 SALT_ATOM=">=app-admin/salt-${SALT_VERSION}"
 PYTHON_SLOT="3.7"
 
@@ -34,7 +34,7 @@ EOF
 eend $? "Failed" || exit $?
 
 ebegin "Selecting profile"
-eselect profile set default/linux/amd64/17.0/no-multilib/hardened
+eselect profile set default/linux/amd64/17.1/no-multilib/hardened
 eend $? "Failed" || exit $?
 
 ebegin "Setting bootstrap flags"
