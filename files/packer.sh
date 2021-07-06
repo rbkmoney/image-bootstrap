@@ -2,7 +2,7 @@
 source /lib/gentoo/functions.sh
 
 OPENSSL_ATOM=">=dev-libs/openssl-1.1.1g"
-SALT_VERSION="3003.1"
+SALT_VERSION="3003"
 SALT_ATOM=">=app-admin/salt-${SALT_VERSION}"
 PYTHON_SLOT="3.9"
 
