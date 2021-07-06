@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := ed45803214cae37331fdfa20c2551f2f830d303e
+PORTAGE_REF := c9654c8dc35465ae5c1899a3dcabc5b846a2c467
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
