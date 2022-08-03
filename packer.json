@@ -12,7 +12,7 @@
             "run_command": ["-d", "-i", "-t", "--privileged=true", "{{.Image}}", "/bin/bash"],
             "volumes": {
                 "{{user `files-dir`}}": "/tmp/data:ro",
-                "{{user `base-dir`}}/portage": "/usr/portage:ro"
+                "{{user `base-dir`}}/portage": "/var/db/repos/gentoo:ro"
             },
             "pull": "false",
             "commit": "true"

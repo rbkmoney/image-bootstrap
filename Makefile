@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := c9654c8dc35465ae5c1899a3dcabc5b846a2c467
+PORTAGE_REF := 9cdfcab6e8fd93219dc3628e24087ce7d6db5e25
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
@@ -35,11 +35,11 @@ submodules: $(SUBTARGETS)
 repos: $(REPOS)
 
 update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
-	$(UTILS_PATH)/sh/getstage3.sh find-latest -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
-		amd64 -hardened+nomultilib | tail -n 1 > .latest-stage3
+	$(UTILS_PATH)/sh/getstage3.sh find-latest \
+		amd64 -hardened-nomultilib-openrc | tail -n 1 > .latest-stage3
 
 .latest-stage3.loaded: .latest-stage3
-	$(UTILS_PATH)/sh/getstage3.sh get-path -D "http://gentoo.rbkmoney.com/gentoo-distfiles" \
+	$(UTILS_PATH)/sh/getstage3.sh get-path \
 		$(shell cat .latest-stage3) | tail -n 1 > $@
 
 .state: .latest-stage3.loaded $(PACKER) $(REPOS) packer.json files/packer.sh files/portage.make.conf

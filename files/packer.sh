@@ -2,9 +2,8 @@
 source /lib/gentoo/functions.sh
 
 OPENSSL_ATOM=">=dev-libs/openssl-1.1.1g"
-SALT_VERSION="3003"
+SALT_VERSION="3004.1-r4"
 SALT_ATOM=">=app-admin/salt-${SALT_VERSION}"
-PYTHON_SLOT="3.9"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -27,7 +26,7 @@ mkdir -p /etc/portage/repos.conf \
 main-repo = gentoo
 
 [gentoo]
-location = /usr/portage
+location = /var/db/repos/gentoo
 sync-type = rsync
 auto-sync = false
 EOF
@@ -45,12 +44,8 @@ ebegin "Rebuilding openssl -bindist"
 emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
-ebegin "Emerging salt qemacs nvi"
-emerge -q --verbose=n "${SALT_ATOM}" qemacs
-eend $? "Failed" || exit $?
-
-ebegin "Selecting python${PYTHON_SLOT} as default python interpreter"
-eselect python set "python${PYTHON_SLOT}"
+ebegin "Emerging salt"
+emerge -q --verbose=n "${SALT_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
