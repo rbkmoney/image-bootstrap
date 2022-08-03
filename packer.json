@@ -1,6 +1,7 @@
 {
     "variables": {
         "docker-registry": "{{env `REGISTRY`}}",
+	"org-name": "{{env `ORG_NAME`}}",
 	"base-dir": "{{env `PWD`}}",
         "files-dir": "{{env `PWD`}}/files/",
         "image-tag": null
@@ -8,7 +9,7 @@
     "builders": [
         {
             "type": "docker",
-            "image": "{{user `docker-registry`}}/rbkmoney/stage3-amd64-hardened-nomultilib",
+            "image": "{{user `docker-registry`}}/{{ user `org-name`}}/stage3-amd64-hardened-nomultilib",
             "run_command": ["-d", "-i", "-t", "--privileged=true", "{{.Image}}", "/bin/bash"],
             "volumes": {
                 "{{user `files-dir`}}": "/tmp/data:ro",
@@ -27,7 +28,7 @@
     "post-processors": [
         {
             "type": "docker-tag",
-            "repository": "{{user `docker-registry`}}/rbkmoney/bootstrap",
+            "repository": "{{user `docker-registry`}}/{{ user `org-name`}}/bootstrap",
             "tag": "{{user `image-tag`}}"
         }
     ]

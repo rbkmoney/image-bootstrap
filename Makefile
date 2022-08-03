@@ -48,7 +48,8 @@ update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.30.1 /bin/sh -c \
 	"export EXTRACT_UNSAFE_SYMLINKS=1; tar xf /tmp/pwd/$(STAGE3); tar cjf /tmp/pwd/$(STAGE3).repack *"
 	$(DOCKER) import $(STAGE3).repack "$(REGISTRY)/$(ORG_NAME)/stage3-amd64-hardened-nomultilib"
-	REGISTRY=$(REGISTRY) $(PACKER) build -var 'image-tag=$(TAG)' packer.json
+	REGISTRY=$(REGISTRY) ORG_NAME=$(ORG_NAME) \
+          $(PACKER) build -var 'image-tag=$(TAG)' packer.json
 	printf "FROM $(SERVICE_IMAGE_NAME):$(TAG)\n \
 	LABEL com.rbkmoney.$(SERVICE_NAME).parent=null \
 	com.rbkmoney.$(SERVICE_NAME).stage3-used=$(STAGE3) \
