@@ -45,7 +45,7 @@ emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt"
-emerge -q --verbose=n "${SALT_ATOM}"
+emerge -q --verbose=n -t "${SALT_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
@@ -56,7 +56,7 @@ einfo "Updating perl"
 perl-cleaner --all || exit $?
 
 ebegin "Updating system"
-emerge -q -uDNt @system
+emerge -q -uDNt @system --usepkgonly
 eend $? "Failed" || exit $?
 
 ebegin "Updating world"
