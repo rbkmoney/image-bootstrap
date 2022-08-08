@@ -36,8 +36,8 @@ ebegin "Selecting profile"
 eselect profile set default/linux/amd64/17.1/no-multilib/hardened
 eend $? "Failed" || exit $?
 
-ebegin "Setting bootstrap flags"
-mkdir -p /etc/portage/package.{accept_keywords,keywords,use,unmask,env} 
+ebegin "Copying portage flags"
+cp -r /tmp/data/package.{accept_keywords,use,unmask,env} /etc/portage/
 eend $? "Failed" || exit $?
 
 ebegin "Rebuilding openssl -bindist"
@@ -79,13 +79,15 @@ find /usr/share/doc -delete
 find /usr/share/sgml -delete
 find /usr/share/i18n -print
 find /usr/share/misc -print
-find / -name '*.pyc' -delete
 
 ebegin "Removing temporary directories and logs"
 rm -rf /var/tmp/{portage,packages,distfiles}
+rm -rf /var/cache/{binpkgs,distfiles}
 find /var/log -type f ! -name '.keep*' -delete
 eend $? "Failed" || exit $?
 
 einfo "And here are some resulting space consumption details"
+find /var/ -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
+find /usr/ -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
 find / -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
 find / -maxdepth 1 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
