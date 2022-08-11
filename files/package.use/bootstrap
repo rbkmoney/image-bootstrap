@@ -1,1 +1,12 @@
 sys-devel/gcc fortran go graphite vtv lto pgo
+app-arch/xz-utils static-libs
+sys-libs/libseccomp static-libs
+sys-libs/libxcrypt static-libs
+sys-libs/zlib static-libs
+virtual/libcrypt static-libs
+dev-libs/libpcre jit
+dev-db/sqlite secure-delete
+dev-libs/openssl sctp tls-heartbeat
+dev-lang/perl minimal
+sys-process/audit python
+sys-apps/util-linux tty-helpers

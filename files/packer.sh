@@ -81,9 +81,12 @@ find /usr/share/i18n -print
 find /usr/share/misc -print
 
 ebegin "Removing temporary directories and logs"
-rm -rf /var/tmp/{portage,packages,distfiles}
-rm -rf /var/cache/{binpkgs,distfiles}
-find /var/log -type f ! -name '.keep*' -delete
+(
+    set -e
+    rm -rf /var/tmp/{portage,packages,distfiles}
+    rm -rf /var/cache/{binpkgs,distfiles}
+    find /var/log -type f ! -name '.keep*' -delete
+)
 eend $? "Failed" || exit $?
 
 einfo "And here are some resulting space consumption details"
