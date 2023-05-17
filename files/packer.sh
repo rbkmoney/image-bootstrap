@@ -1,9 +1,8 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-OPENSSL_ATOM=">=dev-libs/openssl-1.1.1g"
-SALT_VERSION="3004.1-r4"
-SALT_ATOM=">=app-admin/salt-${SALT_VERSION}"
+OPENSSL_ATOM=">=dev-libs/openssl-1.1.1t"
+SALT_ATOM="app-admin/salt"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -44,6 +43,10 @@ ebegin "Rebuilding openssl -bindist"
 emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
+ebegin "Updating system"
+emerge -q -uDNt @system
+eend $? "Failed" || exit $?
+
 ebegin "Emerging salt"
 emerge -q --verbose=n -t "${SALT_ATOM}"
 eend $? "Failed" || exit $?
@@ -52,12 +55,8 @@ ebegin "Selecting pager"
 eselect pager set /usr/bin/less
 eend $? "Failed" || exit $?
 
-einfo "Updating perl"
+einfo "Updating perl packages, if any"
 perl-cleaner --all || exit $?
-
-ebegin "Updating system"
-emerge -q -uDNt @system --usepkgonly
-eend $? "Failed" || exit $?
 
 ebegin "Updating world"
 emerge -q -uDNt @world

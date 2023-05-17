@@ -1,8 +1,10 @@
-.latest-stage3.loaded
 .state
+.latest-stage3.loaded
 .squashed
+.repack
 stage3-*
 latest-stage3-*
+portage
 *~
 *.sublime-workspace
 .DS_Store
