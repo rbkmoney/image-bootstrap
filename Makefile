@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := 789d69b8d61e884a3f876d5aa197e5d5c9515e6f
+PORTAGE_REF := 2114e43e3bc58858a41d61431f8ad7c8bdb2d613
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
@@ -42,7 +42,7 @@ update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 	$(UTILS_PATH)/sh/getstage3.sh get-path \
 		$(shell cat .latest-stage3) | tail -n 1 > $@
 
-.state: .latest-stage3.loaded $(PACKER) $(REPOS) packer.json files/packer.sh files/portage.make.conf
+.state: .latest-stage3.loaded $(PACKER) $(REPOS) packer.json files/packer.sh files/make.conf
 	$(eval STAGE3 := $(shell cat .latest-stage3.loaded))
 	$(shell test -z "$(STAGE3)" && exit 1)
 	$(DOCKER) run -v `pwd`:/tmp/pwd -w /tmp/repack busybox:1.30.1 /bin/sh -c \

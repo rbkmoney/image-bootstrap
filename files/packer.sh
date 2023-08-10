@@ -1,7 +1,7 @@
 #!/bin/bash
 source /lib/gentoo/functions.sh
 
-OPENSSL_ATOM=">=dev-libs/openssl-1.1.1t"
+OPENSSL_ATOM=">=dev-libs/openssl-3.0.9"
 SALT_ATOM="app-admin/salt"
 
 ebegin "Setting locales to generate"
@@ -15,7 +15,7 @@ locale-gen || exit $?
 eselect locale set en_DK.utf8 || exit $?
 
 ebegin "Copying portage/make.conf"
-cp /tmp/data/portage.make.conf /etc/portage/make.conf
+cp /tmp/data/make.conf /etc/portage/make.conf
 eend $? "Failed" || exit $?
 
 ebegin "Adding repos.conf/gentoo"
@@ -59,7 +59,7 @@ einfo "Updating perl packages, if any"
 perl-cleaner --all || exit $?
 
 ebegin "Updating world"
-emerge -q -uDNt @world
+emerge -q -uDNt --with-bdeps=y @world
 eend $? "Failed" || exit $?
 
 ebegin "Cleaning deps"
