@@ -1,6 +1,8 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
 PORTAGE_REF := 36d0ac8d89ad4a303116b7ac46d13d8b1b647cd2
+REGISTRY := dr.xpay.local
+ORG_NAME := xpay_rbk
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state

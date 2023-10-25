@@ -52,11 +52,11 @@ emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
 ebegin "Updating system"
-emerge -q -uDNt @system
+emerge -uDNt @system
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt"
-emerge -q --verbose=n -t "${SALT_ATOM}"
+emerge --verbose=n -t "${SALT_ATOM}"
 eend $? "Failed" || exit $?
 
 ebegin "Selecting pager"
@@ -67,11 +67,11 @@ einfo "Updating perl packages, if any"
 perl-cleaner --all || exit $?
 
 ebegin "Updating world"
-emerge -q -uDNt --with-bdeps=y @world
+emerge -uDNt --with-bdeps=y @world
 eend $? "Failed" || exit $?
 
 ebegin "Cleaning deps"
-emerge -q --verbose=n --depclean
+emerge --verbose=n --depclean
 eend $? "Failed" || exit $?
 
 if [ ! -d /var/salt ]; then
