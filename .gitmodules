@@ -1,4 +1,4 @@
 [submodule "build-utils"]
 path = build-utils
-url = git+ssh://git@gitlab.xpay.local/xpay_rbk/build_utils
+	url = git+ssh://git@gitlab.xpay.local/xpay_rbk/build_utils
 branch = master
