@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := 28162b98af45b00cef440c8d2565383478e2da4c
+PORTAGE_REF := ee5894be0fe9a0d3918a61da6f5ea0b863721f11
 REGISTRY := dr.xpay.local
 ORG_NAME := xpay_rbk
 
@@ -38,7 +38,7 @@ repos: $(REPOS)
 
 update-latest-stage3: $(UTILS_PATH)/sh/getstage3.sh .git
 	$(UTILS_PATH)/sh/getstage3.sh find-latest \
-		amd64 -hardened-nomultilib-openrc | tail -n 1 > .latest-stage3
+		amd64 -nomultilib-openrc | tail -n 1 > .latest-stage3
 
 .latest-stage3.loaded: .latest-stage3
 	$(UTILS_PATH)/sh/getstage3.sh get-path \

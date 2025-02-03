@@ -30,17 +30,22 @@ sync-type = rsync
 auto-sync = false
 EOF
 eend $? "Failed" || exit $?
+
 ebegin "Replacing binhost configuration"
 (
     set -ue
-    ls -la /etc/portage/binrepos.conf/
-    rm -r /etc/portage/binrepos.conf/*
-    cp /tmp/data/binrepos.conf/* /etc/portage/binrepos.conf/
+    rm -r /etc/portage/binrepos.conf
+    cp /tmp/data/binrepos.conf /etc/portage/binrepos.conf
 )
 eend $? "Failed" || exit $?
 
+getuto || exit $?
+
 ebegin "Selecting profile"
-eselect profile set default/linux/amd64/17.1/no-multilib/hardened
+(
+    eselect profile list
+    eselect profile set default/linux/amd64/23.0/no-multilib/hardened
+)
 eend $? "Failed" || exit $?
 
 ebegin "Copying portage flags"
@@ -52,7 +57,7 @@ emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
 ebegin "Updating system"
-emerge -uDNt @system
+emerge -uDNt @system --usepkgonly
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt"
