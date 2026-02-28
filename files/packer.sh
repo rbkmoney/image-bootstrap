@@ -56,8 +56,12 @@ ebegin "Rebuilding openssl -bindist"
 emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
 eend $? "Failed" || exit $?
 
+ebegin "Updating portage"
+emerge -uN portage || true
+eend $? "Failed" || exit $?
+
 ebegin "Updating system"
-emerge -uDNt @system --usepkgonly
+emerge -uDNt @system
 eend $? "Failed" || exit $?
 
 ebegin "Emerging salt"
