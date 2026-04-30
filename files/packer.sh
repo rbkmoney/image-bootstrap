@@ -2,7 +2,6 @@
 source /lib/gentoo/functions.sh
 
 OPENSSL_ATOM=">=dev-libs/openssl-3.0.9"
-SALT_ATOM="app-admin/salt"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -64,10 +63,6 @@ ebegin "Updating system"
 emerge -uDNt @system
 eend $? "Failed" || exit $?
 
-ebegin "Emerging salt"
-emerge --verbose=n -t "${SALT_ATOM}"
-eend $? "Failed" || exit $?
-
 ebegin "Selecting pager"
 eselect pager set /usr/bin/less
 eend $? "Failed" || exit $?
@@ -83,12 +78,6 @@ ebegin "Cleaning deps"
 emerge --verbose=n --depclean
 eend $? "Failed" || exit $?
 
-if [ ! -d /var/salt ]; then
-    ebegin "Creating /var/salt"
-    mkdir -p /var/salt
-    eend $? || exit $?
-fi
-
 find /usr/share/gtk-doc -delete
 find /usr/share/man -delete
 find /usr/share/doc -delete
@@ -100,7 +89,7 @@ ebegin "Removing temporary directories and logs"
 (
     set -e
     rm -rf /var/tmp/{portage,packages,distfiles}
-    rm -rf /var/cache/{binpkgs,distfiles}
+    rm -rf /var/cache/{binpkgs,distfiles,binhost}
     find /var/log -type f ! -name '.keep*' -delete
 )
 eend $? "Failed" || exit $?
