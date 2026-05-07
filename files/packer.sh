@@ -89,13 +89,13 @@ ebegin "Removing temporary directories and logs"
 (
     set -e
     rm -rf /var/tmp/{portage,packages,distfiles}
-    rm -rf /var/cache/{binpkgs,distfiles,binhost}
+    rm -rf /var/cache/{binpkgs,distfiles,binhost,edb}
     find /var/log -type f ! -name '.keep*' -delete
 )
 eend $? "Failed" || exit $?
 
 einfo "And here are some resulting space consumption details"
-find /var/ -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
+find /var/ -mindepth 2 -maxdepth 4 ! -name gentoo -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
 find /usr/ -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
 find / -mindepth 2 -maxdepth 4 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
 find / -maxdepth 1 -exec 'du' '-hsx' '{}' ';' | sort -h | tail -n 50
