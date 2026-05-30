@@ -13,6 +13,10 @@ locale-gen || exit $?
 
 eselect locale set en_DK.utf8 || exit $?
 
+ebegin "Updating /etc/rc.conf"
+sed -i 's/^#\(rc_provide\)="!net"$/\1="net"/' /etc/rc.conf
+eend $? "Failed" || exit $?
+
 ebegin "Copying portage/make.conf"
 cp /tmp/data/make.conf /etc/portage/make.conf
 eend $? "Failed" || exit $?
@@ -39,6 +43,30 @@ ebegin "Replacing binhost configuration"
 eend $? "Failed" || exit $?
 
 getuto || exit $?
+
+ebegin "Adding baka-bakka amd64 binhost key"
+(
+    set -ue
+    cat /etc/portage/gnupg/gpg-agent.conf || true
+    cat <<EOF  >> /etc/portage/gnupg/gpg-agent.conf
+allow-preset-passphrase
+max-cache-ttl 34560000
+default-cache-ttl 34560000
+EOF
+    gpg --homedir=/etc/portage/gnupg --no-tty --batch --yes \
+	--import /tmp/data/baka-bakka-amd64-binhost.pgp
+    gpg --homedir=/etc/portage/gnupg --no-tty --batch --yes \
+	--verbose \
+	--pinentry-mode=loopback \
+	--passphrase-file /etc/portage/gnupg/pass \
+	--sign-key A18A4922C89EFC3188558873E3506766BD71FBE9
+    echo -e "trust\n4\nsave\n" \
+	| gpg --homedir=/etc/portage/gnupg --no-tty --batch --yes \
+	      --command-fd 0 \
+	      --edit-key A18A4922C89EFC3188558873E3506766BD71FBE9
+    gpg --batch --homedir=/etc/portage/gnupg --check-trustdb
+)
+eend $? "Failed" || exit $?
 
 ebegin "Selecting profile"
 (
