@@ -4,3 +4,4 @@ dev-libs/libpcre2 jit
 dev-db/sqlite secure-delete
 dev-lang/perl minimal
 sys-apps/util-linux tty-helpers
+net-libs/libmicrohttpd -ssl
