@@ -1,7 +1,8 @@
 #!/bin/bash
+
 source /lib/gentoo/functions.sh
 
-OPENSSL_ATOM=">=dev-libs/openssl-3.0.9"
+OPENSSL_ATOM=">=dev-libs/openssl-3.5.0"
 
 ebegin "Setting locales to generate"
 cat <<EOF> /etc/locale.gen
@@ -79,17 +80,17 @@ ebegin "Copying portage flags"
 cp -r /tmp/data/package.{accept_keywords,use,unmask,env} /etc/portage/
 eend $? "Failed" || exit $?
 
-ebegin "Rebuilding openssl -bindist"
-emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh
-eend $? "Failed" || exit $?
+einfo "Rebuilding openssl -bindist"
+emerge --backtrack=200 --verbose-conflicts "${OPENSSL_ATOM}" openssh || exit $?
 
-ebegin "Updating portage"
+einfo "Updating portage"
 emerge -uN portage || true
-eend $? "Failed" || exit $?
 
-ebegin "Updating system"
-emerge -uDNt @system
-eend $? "Failed" || exit $?
+einfo "Installing Git and other tools"
+emerge dev-vcs/git || exit $?
+
+einfo "Updating system"
+emerge -uDNt @system || exit $?
 
 ebegin "Selecting pager"
 eselect pager set /usr/bin/less
@@ -98,13 +99,11 @@ eend $? "Failed" || exit $?
 einfo "Updating perl packages, if any"
 perl-cleaner --all || exit $?
 
-ebegin "Updating world"
-emerge -uDNt --with-bdeps=y @world
-eend $? "Failed" || exit $?
+einfo "Updating world"
+emerge -uDNt --with-bdeps=y @world || exit $?
 
-ebegin "Cleaning deps"
-emerge --verbose=n --depclean
-eend $? "Failed" || exit $?
+einfo "Cleaning deps"
+emerge --verbose=n --depclean || exit $?
 
 find /usr/share/gtk-doc -delete
 find /usr/share/man -delete
