@@ -24,6 +24,10 @@ default:
   tags:
     - shell
   before_script:
+    # The job shell lands on umask 027, but workspace files must be
+    # world-readable — portage's userfetch reads the bind-mounted
+    # portage/ checkout as uid 250 inside the build container.
+    - umask 022
     - eval $(ssh-agent -s)
     - echo "${SSH_AGENT_PID}" > "${PWD}/${CI_JOB_ID}.job"
     - ssh-add
@@ -40,11 +44,18 @@ build:
     # Full history: the Makefile stamps images with `git rev-list --count HEAD`,
     # wrong on a shallow clone.
     GIT_DEPTH: 0
+    # Packer connects to checkpoint.hashicorp.com per invocation, which is unreachable,
+    # so skip the wait.
+    CHECKPOINT_DISABLE: "1"
   artifacts:
     paths:
       - .state
   script:
     - packer version
+    # Packer debs ship no bundled builders; docker is a plugin. Pinned to
+    # v1.1.1: newer releases have no GitHub assets (moved to
+    # releases.hashicorp.com)
+    - packer plugins install github.com/hashicorp/docker v1.1.1
     - docker version --format 'docker server {{.Server.Version}}'
     - make submodules
     - make repos
