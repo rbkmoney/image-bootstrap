@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := b5b8a1638c681b0572af9a338f962f0b198d2174
+PORTAGE_REF := c58663c16343273d0e59b391771faefe4b8f3827
 REGISTRY := dr.xpay.local
 ORG_NAME := xpay_rbk
 
