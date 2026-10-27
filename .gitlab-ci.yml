@@ -1,7 +1,11 @@
 # Runs on the shell runner (tag: shell): docker and packer
 # should be installed on it, nothing is installed per-job.
+# Multi-environment
+# The include path derives from the predefined root namespace
+# so it resolves per GitLab instance (xpay, hg).
+# Verified via ci/lint on 19.4: variables expand before project lookup.
 include:
-  - project: xpay_rbk/build_utils
+  - project: '$CI_PROJECT_ROOT_NAMESPACE/build_utils'
     file: gitlab-ci-lib/container-scanning.gitlab-ci.yml
 
 workflow:

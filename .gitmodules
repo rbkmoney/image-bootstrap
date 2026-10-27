@@ -1,4 +1,7 @@
 [submodule "build-utils"]
 path = build-utils
-	url = git+ssh://git@gitlab.xpay.local/xpay_rbk/build_utils
+# Relative URL: resolves against the superproject's remote, so the
+# same source works on every GitLab instance.
+# Run `git submodule sync` in existing clones after changing this.
+url = ../build_utils
 branch = master

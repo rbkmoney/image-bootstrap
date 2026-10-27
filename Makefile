@@ -1,8 +1,12 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
 PORTAGE_REF := 4ff1d03e30f45a7e5cec02844cb449682402000e
-REGISTRY := dr.xpay.local
-ORG_NAME := xpay_rbk
+# Multi-environment
+# prefer the per-instance coordinates GitLab exports in CI
+# (CI_REGISTRY / CI_PROJECT_ROOT_NAMESPACE), fall back to the xpay
+# defaults for local builds.
+REGISTRY ?= $(if $(CI_REGISTRY),$(CI_REGISTRY),dr.xpay.local)
+ORG_NAME ?= $(if $(CI_PROJECT_ROOT_NAMESPACE),$(CI_PROJECT_ROOT_NAMESPACE),xpay_rbk)
 
 .PHONY: $(SERVICE_NAME) push submodules repos update-latest-stage3
 $(SERVICE_NAME): .state
