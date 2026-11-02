@@ -4,7 +4,8 @@
 	"org-name": "{{env `ORG_NAME`}}",
 	"base-dir": "{{env `PWD`}}",
         "files-dir": "{{env `PWD`}}/files/",
-        "image-tag": null
+        "image-tag": null,
+        "commit": null
     },
     "builders": [
         {
@@ -22,7 +23,8 @@
     "provisioners": [
         {
             "type": "shell",
-            "script": "{{user `files-dir`}}/packer.sh"
+            "script": "{{user `files-dir`}}/packer.sh",
+            "environment_vars": ["COMMIT={{user `commit`}}"]
         }
     ],
     "post-processors": [

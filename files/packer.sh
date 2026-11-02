@@ -112,6 +112,14 @@ find /usr/share/sgml -delete
 find /usr/share/i18n -print
 find /usr/share/misc -print
 
+ebegin "Setting bootstrap shell prompt"
+# Mark interactive shells in the image distinctly from the host:
+# (bootstrap:<short-sha>) user@host:path$ — \$ renders # for root.
+# COMMIT arrives via the packer provisioner environment (packer.json).
+printf '\n# Bootstrap image prompt (baked at build time)\nexport PS1="(bootstrap:%s) \\u@\\h:\\w\\$ "\n' \
+    "${COMMIT:0:8}" >> /etc/bash/bashrc
+eend $? "Failed" || exit $?
+
 ebegin "Removing temporary directories and logs"
 (
     set -e

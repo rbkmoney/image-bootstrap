@@ -48,6 +48,12 @@ build:
     # Full history: the Makefile stamps images with `git rev-list --count HEAD`,
     # wrong on a shallow clone.
     GIT_DEPTH: 0
+    # The runner fetches submodules during its own checkout phase, with
+    # job credentials — `make submodules` in the script phase cannot:
+    # the relative submodule URL resolves against a sanitized origin
+    # (the runner strips the job token after fetching), so a fresh
+    # workspace cannot clone build_utils.
+    GIT_SUBMODULE_STRATEGY: normal
     # Packer connects to checkpoint.hashicorp.com per invocation, which is unreachable,
     # so skip the wait.
     CHECKPOINT_DISABLE: "1"
