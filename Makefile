@@ -1,6 +1,6 @@
 SERVICE_NAME := bootstrap
 UTILS_PATH := build-utils
-PORTAGE_REF := 4ff1d03e30f45a7e5cec02844cb449682402000e
+PORTAGE_REF := f2618ad068b208d0c616aa77029f86c1bf5e07c9
 # Multi-environment
 # prefer the per-instance coordinates GitLab exports in CI
 # (CI_REGISTRY / CI_PROJECT_ROOT_NAMESPACE), fall back to the xpay
